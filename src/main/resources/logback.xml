@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+	<property name="projectName" value="Spring-RabbitMQ" />
+	<property name="log.path" value="logs/${projectName}" />
+	
+	<!-- 控制台输出 -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+	</appender>
+	
+	<appender name="framework" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.path}/${projectName}.log</File>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.path}/${projectName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="framework_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.path}/${projectName}_error.log</File>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger - %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.path}/${projectName}_error.%d{yyyy-MM-dd}.log</FileNamePattern>
+		</rollingPolicy>
+	</appender>
+
+	<logger name="com.app" level="DEBUG" />
+    <logger name="org.springframework" level="INFO" />
+    
+	<root level="INFO">
+        <appender-ref ref="console" />
+		<appender-ref ref="framework" />
+		<appender-ref ref="framework_error" />
+	</root>
+</configuration>

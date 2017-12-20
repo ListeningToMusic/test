@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/rabbit
+        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd"
+	default-lazy-init="true">
+
+	<description>Spring RabbitMQ Consumer 配置</description>
+
+	<rabbit:connection-factory id="connectionFactory"
+		username="${mq.username}" password="${mq.password}" host="${mq.host}"
+		port="${mq.port}" virtual-host="${mq.virtual.host}" />
+
+	<rabbit:queue id="email_queue" name="email_queue" durable="true"
+		auto-delete="false" exclusive="false" />
+
+	<rabbit:queue id="sms_queue" name="sms_queue" durable="true"
+		auto-delete="false" exclusive="false" />
+
+	<bean id="messageHandler" class="com.app.mq.consumer.MessageHandler"></bean>
+
+	<rabbit:listener-container
+		connection-factory="connectionFactory" message-converter="jsonMessageConverter">
+		<rabbit:listener queues="email_queue" ref="messageHandler" method="handleMessage" />
+		<rabbit:listener queues="sms_queue" ref="messageHandler" method="handleMessage" />
+	</rabbit:listener-container>
+
+	<bean id="jsonMessageConverter" class="com.app.mq.convert.FastJsonMessageConverter"></bean>
+</beans>
